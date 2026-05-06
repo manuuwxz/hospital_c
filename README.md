@@ -1,5 +1,8 @@
 ATIVIDADE EM GRUPO – ESTRUTURA DE DADOS
 
+Alunas:
+Emanuelly de Oliveira Rodrigues - 202512546
+
 Tema: Pilha, Fila e Fila Circular
 
 Título da Atividade: Hospital Simulado – Sistema de Gerenciamento de Pacientes
