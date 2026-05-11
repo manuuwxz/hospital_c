@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>    // .h é conceito
-#include "Hospital.c"  // .c é implementação
+#include "Hospital.h"  // .c é implementação
 
 //  Emergência: Pilha (último a chegar é atendido primeiro) – capacidade definida por vetor
 Paciente pilhaEmergencia[MAX_PILHA];
