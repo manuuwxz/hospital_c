@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>    // .h é conceito
-#include "Hospital.h"  // .c é implementação
+#include <stdlib.h>
+#include "hospital.h"  // .c é implementação
 
 //  Emergência: Pilha (último a chegar é atendido primeiro) – capacidade definida por vetor
 Paciente pilhaEmergencia[MAX_PILHA];
@@ -22,7 +22,7 @@ void  exibirDados(Paciente p) {
 void CadastrarPaciente() {
     Paciente p;
     printf("\nNome do Paciente: ");
-    scanf(" %[^\n]s", p.nome);
+    scanf(" %[^\n]", p.nome);
     printf("Idade: ");
     scanf("%d", &p.idade);
     printf("Gravidade (1 a 5): ");
@@ -100,11 +100,11 @@ void AtenderExame() {
 void AtenderPaciente(){
         int opcao; 
         printf("\nSETORES - Atendimento:");
-        printf("1- Emergência");
-        printf("2- Consulta");
-        printf("3- Exames");
-        printf("4- Sair");
-        printf("Digite sua opção: ");
+        printf("\n1- Emergência");
+        printf("\n2- Consulta");
+        printf("\n3- Exames");
+        printf("\n4- Sair");
+        printf("\nDigite sua opção: ");
         scanf("%d", &opcao);
         switch (opcao)
         {
@@ -126,8 +126,45 @@ void AtenderPaciente(){
         }
 }
 
-void ExibirPaciente(){
+void ExibirPaciente() {
+    int i, idx;
 
+    printf("\nLISTA DE ESPERA POR SETOR");
+
+    // 1. EXIBIR PILHA (EMERGÊNCIA) - Do topo para a base
+    printf("\nEMERGÊNCIA (Ordem de Atendimento: Último que entra, Primeiro que sai) \n");
+    if (topoEmergencia == -1) {
+        printf("Vazia.\n");
+    } else {
+        for (i = topoEmergencia; i >= 0; i--) {
+            printf("[%d] ", i);
+            exibirDados(pilhaEmergencia[i]);
+        }
+    }
+
+    // 2. EXIBIR FILA LINEAR (CONSULTAS) - Da frente para o final
+    printf("\nCONSULTAS (Ordem de Atendimento: Primeiro que entra, Primeiro que sai)\n");
+    if (frenteConsultas > trasConsultas) {
+        printf("Vazia.\n");
+    } else {
+        for (i = frenteConsultas; i <= trasConsultas; i++) {
+            printf("[%d] ", i);
+            exibirDados(filaConsultas[i]);
+        }
+    }
+
+    // 3. EXIBIR FILA CIRCULAR (EXAMES) - Percorrendo usando o total de elementos
+    printf("\nEXAMES (Fila Circular - Máx 8)\n");
+    if (totalExames == 0) {
+        printf("Vazia.\n");
+    } else {
+        for (i = 0; i < totalExames; i++) {
+            // Cálculo do índice circular: (frente + deslocamento) % tamanho
+            idx = (frenteExames + i) % MAX_CIRCULAR;
+            printf("[%d] ", idx);
+            exibirDados(filaExames[idx]);
+        }
+    }
 }
 
 void TransferirPaciente() {
@@ -136,7 +173,7 @@ void TransferirPaciente() {
     int houveRemocao = 0;
 
     printf("\nTransferencia de Paciente");
-    printf("\nSair de: 1-Emergencia \n 2-Consulta \n 3-Exame: ");
+    printf("\nSair de: \n1-Emergencia \n2-Consulta \n3-Exame: ");
     scanf("%d", &origem);
 
     // 1. REMOVER DA ORIGEM
@@ -173,7 +210,7 @@ void TransferirPaciente() {
 
     // 2. INSERIR NO DESTINO (Se a remocao deu certo)
     if (houveRemocao) {
-        printf("Transferir para:\n 1-Emergencia \n 2-Consulta \n 3-Exame: ");
+        printf("\nTransferir para:\n1-Emergencia \n2-Consulta \n3-Exame: ");
         scanf("%d", &destino);
 
         switch (destino) {
@@ -181,7 +218,7 @@ void TransferirPaciente() {
                 if (topoEmergencia < MAX_PILHA - 1) {
                     topoEmergencia++;
                     pilhaEmergencia[topoEmergencia] = temporario;
-                    printf("Sucesso: %s transferido para Emergencia.\n", temporario.nome);
+                    printf("Paciente: %s transferido para Emergencia.\n", temporario.nome);
                 } else printf("Erro: Setor lotado! Paciente perdido no sistema.\n");
                 break;
 
@@ -189,7 +226,7 @@ void TransferirPaciente() {
                 if (trasConsultas < MAX_FILA - 1) {
                     trasConsultas++;
                     filaConsultas[trasConsultas] = temporario;
-                    printf("Sucesso: %s transferido para Consultas.\n", temporario.nome);
+                    printf("Paciente: %s transferido para Consultas.\n", temporario.nome);
                 } else printf("Erro: Setor lotado!\n");
                 break;
 
@@ -203,7 +240,7 @@ void TransferirPaciente() {
                 trasExames = (trasExames + 1) % MAX_CIRCULAR;
                 filaExames[trasExames] = temporario;
                 totalExames++;
-                printf("Sucesso: %s transferido para Exames.\n", temporario.nome);
+                printf("Paciente: %s transferido para Exames.\n", temporario.nome);
                 break;
 
             default:
@@ -218,46 +255,4 @@ void  Relatorios() {
     printf("Emergência (Pilha): %d pacientes\n", topoEmergencia + 1);
     printf("Consultas (Fila): %d pacientes\n", (trasConsultas - frenteConsultas + 1) < 0 ? 0 : (trasConsultas - frenteConsultas + 1));
     printf("Exames (Circular): %d pacientes\n", totalExames);
-}
-
-
-int main(){
-    int opcao;
-    while (opcao != 6){
-        printf("\nHospital Simulado");
-        printf("\nSistema de Gerenciamento de Pacientes");
-        printf("\n1-Cadastrar novo paciente");
-        printf("\n2-Atender paciente em cada setor ");
-        printf("\n3-Mostrar pacientes em cada setor");
-        printf("\n4-Transferir paciente entre setores");
-        printf("\n5-Relatórios");
-        printf("\n6-Sair");
-        printf("\nDigite sua opção: ");
-        scanf("%d", &opcao);
-        switch (opcao)
-        {
-        case 1:
-            CadastrarPaciente();
-            break;
-        case 2:
-            AtenderPaciente();
-            break;
-        case 3:
-            ExibirPaciente();
-            break;
-        case 4:
-            TransferirPaciente();
-            break;
-        case 5:
-            Relatorios();
-            break;
-        case 6:
-            printf("Encerrando programa...\n");
-            break;
-            
-        default:
-            printf("Opção inválida!\n");
-            break;
-        }
-    }
 }

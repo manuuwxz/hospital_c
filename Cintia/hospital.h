@@ -1,5 +1,5 @@
-#ifndef HOSPITAL_H
-#define HOSPITAL_H
+#ifndef HOSPITAL_H_INCLUDED
+#define HOSPITAL_H_INCLUDED
 
 #define MAX_PILHA 100
 #define MAX_FILA 100
